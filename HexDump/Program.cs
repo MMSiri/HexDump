@@ -66,7 +66,8 @@ namespace HexDump
                 }
             */
 
-            using (Stream input = File.OpenRead(args[0]))
+            args[0] = Console.ReadLine();
+            using (Stream input = GetInputStream(args))
             {
                 var buffer = new byte[16];
                 int bytesRead;
@@ -92,5 +93,11 @@ namespace HexDump
 
             }
          }
+
+        static Stream GetInputStream(string[] args)
+        {
+            if ((args.Length != 1) || !File.Exists(args[0])) return Console.OpenStandardInput();
+            else return File.OpenRead(args[0]);
+        }
     }
 }
