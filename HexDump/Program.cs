@@ -65,8 +65,9 @@ namespace HexDump
                     Console.WriteLine("   {0}", bufferContents.Substring(0, bytesRead));
                 }
             */
+            
+            //args[0] = Console.ReadLine();
 
-            args[0] = Console.ReadLine();
             using (Stream input = GetInputStream(args))
             {
                 var buffer = new byte[16];
@@ -96,8 +97,22 @@ namespace HexDump
 
         static Stream GetInputStream(string[] args)
         {
-            if ((args.Length != 1) || !File.Exists(args[0])) return Console.OpenStandardInput();
-            else return File.OpenRead(args[0]);
+            if ((args.Length != 1) || !File.Exists(args[0]))
+            {
+                return Console.OpenStandardInput();
+            }
+            else
+            {
+                try
+                {
+                    return File.OpenRead(args[0]);
+                }
+                catch (UnauthorizedAccessException ex)
+                {
+                    Console.Error.WriteLine("Unable to read {0}, dumping from stdin: {1}", args[0], ex.Message);
+                    return Console.OpenStandardInput();
+                }
+            }
         }
     }
 }
